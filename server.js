@@ -1,50 +1,37 @@
 const express = require ('express');
 const app = express();
 const path = require('path');
+const cors = require('cors');
+const corsOptions = require('./config/corsOptions');
+const {logger} = require('./middleware/logEvents');
+const errorHandler = require('./middleware/errorHandler');
 const PORT = process.env.PORT || 3500;
 
-app.get(['/', '/index', '/index.html'], (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'index.html'));
-});
+//custom middleware logger
+app.use(logger);
 
-app.get(['/new-page', '/new-page.html'], (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'new-page.html'));
-});
+//Cross Origin Resource Sharing
+app.use(cors(corsOptions));
 
-app.get(['/old-page', '/old-page.html'], (req, res) => {
-    res.redirect(301, '/new-page.html');
-});
+//built-in middleware to handle urlencoded form data
+app.use(express.urlencoded({ extended: false }));
 
-//Route handlers
-app.get(['/hello', '/hello.html'], (req, res, next) => {
-    console.log('attempted to load hello.html');
-    next()
-}, (req, res) => {
-    res.send('Hello World!');
-}); 
+//built-in middleware for json
+app.use(express.json());
 
-//chaining route handlers
-const one = (req, res, next) => {
-    console.log('one');
-    next();
-}
+//serve static files
+app.use('/', express.static(path.join(__dirname, '/public')));
 
-const two = (req, res, next) => {
-    console.log('two');
-    next();
-}
+//routes
+app.use('/', require('./routes/root'));
+app.use('/employees', require('./routes/api/employees'));
 
-const three = (req, res, next) => {
-    console.log('three');
-    res.send('Finished!');
-}
 
-app.get(['/chain', '/chain.html'], [one, two, three]);
 
 app.use((req, res) => {
     res.status(404).sendFile(path.resolve(__dirname, 'views/404.html'));
 });
 
-
+app.use(errorHandler);
 
 app.listen(PORT, ()=> console.log(`Server running on port ${PORT}`));
