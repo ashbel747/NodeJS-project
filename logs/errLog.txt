@@ -2,3 +2,4 @@
 20250721	20:18:53	ce187c3d-1ab4-46c2-aa4d-a14a2510681f	TypeError: Cannot read properties of undefined (reading 'firstname')
 20250721	20:18:54	6d15c58e-4a35-4819-985c-d9ed54ab2e82	TypeError: Cannot read properties of undefined (reading 'firstname')
 20250721	20:22:56	f936d91b-31ec-4815-a7a8-df7ca55b1bd3	TypeError: Cannot read properties of undefined (reading 'firstname')
+20250722	10:59:26	a7adf1c7-0a4f-4406-94aa-88ea4055ea4c	TypeError: Cannot destructure property 'user' of 'req.body' as it is undefined.
